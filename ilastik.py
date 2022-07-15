@@ -8,6 +8,9 @@ import numpy as np
 from readlif.reader import LifFile
 import tifffile
 
+# python ilastik.py --name EdU --ilastik "C:\Program Files\ilastik-1.3.3post3\ilastik.exe" --project C:\Users\Patrick\Desktop\Cecilia2Patrick\UTI_EPI_plusNTcData_EdU_Pixel_Classifier_06302022.ilp --directory C:\Users\Patrick\Desktop\Cecilia2Patrick --channel 2
+# python ilastik.py --name 17258 --ilastik "C:\Program Files\ilastik-1.3.3post3\ilastik.exe" --project C:\Users\Patrick\Desktop\Cecilia2Patrick\MyProject17258_Classifier_Train_NTc_06292022.ilp --directory C:\Users\Patrick\Desktop\Cecilia2Patrick --channel 1
+
 @click.command()
 @click.option("-n",
     "--name",
