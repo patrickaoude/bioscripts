@@ -6,6 +6,7 @@ import click
 import numpy as np
 from readlif.reader import LifFile
 
+
 @click.command()
 @click.option("--directory",
     required=True,
@@ -24,7 +25,7 @@ def convertLifs(directory):
     # iterate over each lif and split/store channels in h5fd format 
     for lifPath in lifList:
         lif = LifFile(lifPath)
-        lifName = lifPath.split("\\")[1].split(".")[0]
+        lifName = os.path.basename(lifPath).split(".")[0]
         # img 1 seems to be the merged image for the file I tested, this assumption might be wrong.
         img = lif.get_image(1)
         nZ = img.dims.z
