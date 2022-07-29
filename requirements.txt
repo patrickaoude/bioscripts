@@ -3,3 +3,4 @@ click
 numpy
 readlif
 tifffile
+intermine
