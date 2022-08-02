@@ -10,9 +10,14 @@ service = Service("https://planmine.mpibpc.mpg.de:443/planmine/service")
 @click.option(
     "-c",
     "--contigs",
-    required=True,
     type=str,
     help="Specify a comma-separated list of dd_smed_v6 contig to fetch GO terms for.",
+)
+@click.option(
+    "-i",
+    "--infile",
+    type=str,
+    help="Specify the file containing a comma-separated list of dd_smed_v6 contigs to fetch GO terms for.",
 )
 @click.option(
     "-o",
@@ -21,20 +26,16 @@ service = Service("https://planmine.mpibpc.mpg.de:443/planmine/service")
     type=str,
     help="Specify the output path for the results (results are in tab-separated format or .tsv).",
 )
-def queryContigs(contigs, outfile):
-    contigs = contigs.split(",")
-    output = [
-        queryContig(c)
-        if "dd_Smed_v6_" in c
-        else [
-            {
-                "contig": c,
-                "name": "",
-                "description": "incorrect contig format (need dd_Smed_v6_)",
-            }
-        ]
-        for c in contigs
-    ]  # only query correctly formatted IDs (regex would be better)
+def queryContigs(contigs, infile, outfile):
+    if contigs and not infile:
+        contigs = contigs.split(",")
+    elif not contigs and infile:
+        with open(infile, "r") as i:
+            contigs = [row[0] for row in csv.reader(i)]
+            print(contigs)
+    else:
+        raise("Contigs must be provided as either a comma-separated list in the command line or as a comma-separated input file.")
+    output = [queryContig(c) for c in contigs]
     header = ["contig", "names", "descriptions"]
     with open(outfile, "w") as f:
         writer = csv.writer(f, delimiter="\t")
@@ -67,6 +68,10 @@ def queryContig(contig):
             ],
         }
         terms.append(term)
+
+    if terms == []:
+        terms = [{"contig": contig, "name": "", "description": "no match found"}]
+
     return terms
 
 
