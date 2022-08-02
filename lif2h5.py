@@ -8,9 +8,11 @@ from readlif.reader import LifFile
 
 
 @click.command()
-@click.option("--directory",
+@click.option(
+    "--directory",
     required=True,
-    help="""Directory containing 'lif' folder. A subdirectory 'h5' will be created to store output files.""")
+    help="""Directory containing 'lif' folder. A subdirectory 'h5' will be created to store output files.""",
+)
 def convertLifs(directory):
     # raise an exception if the lif input folder does not exist
     lifDir = os.path.join(directory, "lif")
@@ -22,7 +24,7 @@ def convertLifs(directory):
         os.mkdir(h5Dir)
     # get all lif files
     lifList = glob.glob(f"{lifDir}/*.lif")
-    # iterate over each lif and split/store channels in h5fd format 
+    # iterate over each lif and split/store channels in h5fd format
     for lifPath in lifList:
         lif = LifFile(lifPath)
         lifName = os.path.basename(lifPath).split(".")[0]
@@ -40,8 +42,11 @@ def convertLifs(directory):
             h5Path = os.path.join(h5Dir, h5Name)
             with h5py.File(h5Path, "w") as f:
                 grp = f.create_group("t0")
-                dset = grp.create_dataset(f"channel{c}", channel.shape, dtype="i", chunks=True)
+                dset = grp.create_dataset(
+                    f"channel{c}", channel.shape, dtype="i", chunks=True
+                )
                 dset[...] = channel
+
 
 if __name__ == "__main__":
     convertLifs()
