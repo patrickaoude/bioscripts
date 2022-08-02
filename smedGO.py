@@ -43,8 +43,8 @@ def queryContigs(contigs, infile, outfile):
         for terms in output:
             print(terms)
             contig = terms[0]["contig"]
-            names = " | ".join([t["name"] for t in terms])
-            descriptions = " | ".join([t["description"] for t in terms])
+            names = " | ".join([t["name"] for t in terms if t["name"]])
+            descriptions = " | ".join([t["description"] for t in terms if t["description"]])
             writer.writerow([contig, names, descriptions])
 
 
