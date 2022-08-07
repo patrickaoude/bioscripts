@@ -34,7 +34,9 @@ def queryContigs(contigs, infile, outfile):
             contigs = [row[0] for row in csv.reader(i)]
             print(contigs)
     else:
-        raise("Contigs must be provided as either a comma-separated list in the command line or as a comma-separated input file.")
+        raise (
+            "Contigs must be provided as either a comma-separated list in the command line or as a comma-separated input file."
+        )
     output = [queryContig(c) for c in contigs]
     header = ["contig", "names", "descriptions"]
     with open(outfile, "w") as f:
@@ -44,7 +46,9 @@ def queryContigs(contigs, infile, outfile):
             print(terms)
             contig = terms[0]["contig"]
             names = " | ".join([t["name"] for t in terms if t["name"]])
-            descriptions = " | ".join([t["description"] for t in terms if t["description"]])
+            descriptions = " | ".join(
+                [t["description"] for t in terms if t["description"]]
+            )
             writer.writerow([contig, names, descriptions])
 
 
