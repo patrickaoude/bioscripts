@@ -70,9 +70,18 @@ TMPDIR = "tmp"
     default=mp.cpu_count(),
     help="Specify the number of CPUs or cores for parallel processing.",
 )
-def annotateSequences(infile, outfile, hmmerbin, model, cores):
+@click.option(
+    "-p",
+    "--save_protein",
+    type=bool,
+    default=False,
+    help="Also output a protein fasta file with all translated ORFs.",
+)
+def annotateSequences(infile, outfile, hmmerbin, model, cores, save_protein):
     sequences = SeqIO.parse(infile, "fasta")
     numSeqs = 0
+    if save_protein:
+        proteins = []
     if not os.path.exists(TMPDIR):
         os.mkdir(TMPDIR)
     with open(infile, "r") as f:
@@ -97,7 +106,16 @@ def annotateSequences(infile, outfile, hmmerbin, model, cores):
             results.append(result)
         for r in results:
             writer.writerow(r)
+            if save_protein:
+                contig = r[0]
+                sequence = r[6]
+                if sequence is not None:
+                    protein = SeqRecord(sequence, id=contig, name="", description="")
+                    proteins.append(protein)
         pool.close()
+    if save_protein:
+        baseName = outfile.split(".")[0]
+        SeqIO.write(proteins, f"{baseName}_protein.fasta", "fasta-2line")
     os.rmdir(TMPDIR)
 
 
