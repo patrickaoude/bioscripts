@@ -74,10 +74,15 @@ DTSTAMP:{fmtDate(datetime.datetime.now().replace(second=0, microsecond=0))}
 END:VEVENT"""
 
 
+allDateTasks = []
 for exp, weeks in experiments.items():
     tasks = []
     for week, dailyTasks in weeks.items():
         for date, task in zip(*[dates[week], dailyTasks]):
             if pd.notna(task):
                 tasks.append((date, task))
-    makeCalendar(exp, tasks)
+                allDateTasks.append((date, f"{exp}: {task}"))
+    # old method: make a calendar for each experiment instead of one combined calendar
+    # makeCalendar(exp, tasks)
+
+makeCalendar("Experiments", allDateTasks)
