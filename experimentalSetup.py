@@ -66,7 +66,7 @@ def makeEvent(date, task):
     return f"""
 BEGIN:VEVENT
 DTSTART;TZID=America/New_York:{fmtDate(date.date())}
-DTEND;TZID=America/New_York:{fmtDate(date.date())}
+DTEND;TZID=America/New_York:{fmtDate(date.date() + datetime.timedelta(days=1))}
 SUMMARY:{task}
 UID:{uuid.uuid4()}
 CREATED:{fmtDate(datetime.datetime.now().replace(second=0, microsecond=0))}
