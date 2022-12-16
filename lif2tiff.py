@@ -44,7 +44,8 @@ def convertLifs(directory):
                     ]
                 )
             )
-        imwrite("temp.tif", np.array(zStacks), shape=np.shape(zStacks))
+        tifPath = os.path.join(tiffDir, f"{lifName}.tif")
+        imwrite(tifPath, np.array(zStacks), shape=np.shape(zStacks))
 
 
 if __name__ == "__main__":
