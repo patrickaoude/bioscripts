@@ -33,12 +33,18 @@ def convertLifs(directory):
         img = lif.get_image(1)
         nZ = img.dims.z
         nC = img.channels
-        # iterate over each channel to save a single Z layer together as a tiff file
         zStacks = []
-        with TiffWriter("test_output.tif") as tif:
-            for z in range(0, nZ):
-                for c in range(0, nC):
-                    tif.write(np.array(img.get_frame(z=z, c=c)))
+        for z in range(0, nZ):
+            zStacks.append(
+                np.array(
+                    [
+                        np.array(img.get_frame(z=z, c=0)),
+                        np.array(img.get_frame(z=z, c=1)),
+                        np.array(img.get_frame(z=z, c=2)),
+                    ]
+                )
+            )
+        imwrite("temp.tif", np.array(zStacks), shape=np.shape(zStacks))
 
 
 if __name__ == "__main__":
