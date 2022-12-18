@@ -4,7 +4,7 @@ import glob
 import click
 import numpy as np
 from readlif.reader import LifFile
-from tifffile import imwrite, imshow, TiffWriter
+from tifffile import imwrite
 
 
 @click.command()
