@@ -1,7 +1,6 @@
 import os
 import glob
 
-import h5py
 import click
 import numpy as np
 from readlif.reader import LifFile
