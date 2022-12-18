@@ -18,7 +18,7 @@ def convertLifs(directory):
     lifDir = os.path.join(directory, "lif")
     if not os.path.exists(lifDir):
         raise Exception(f"Expected a folder called 'lif' within {directory}")
-    # create output hdf5 folder if it does not exist
+    # create output tiff folder if it does not exist
     tiffDir = os.path.join(directory, "tiff")
     if not os.path.exists(tiffDir):
         os.mkdir(tiffDir)
