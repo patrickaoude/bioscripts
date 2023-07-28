@@ -1,8 +1,5 @@
-import uuid
-import datetime
-
-import numpy as np
 import pandas as pd
+from icalendar import Calendar, Event
 
 df = pd.read_excel("experimentalSetup.xlsx")  # , index_col=0)
 
@@ -27,62 +24,18 @@ for exp, index in experimentHeaders.items():
         temp += 1
     experiments[df.loc[index][0]] = currExp
 
-
-def makeCalendar(exp, dateTaskTuples):
-    events = f"""
-BEGIN:CALENDAR
-VERSION:2.0
-CALSCALE:GREGORIAN
-PRODID:-//SabreDAV//SabreDAV//EN
-X-WR-CALNAME:{exp}
-REFRESH-INTERVAL;VALUE=DURATION:PT4H
-X-PUBLISHED-TTL:PT4H
-BEGIN:VTIMEZONE
-TZID:America/New_York
-BEGIN:DAYLIGHT
-TZOFFSETFROM:-0500
-TZOFFSETTO:-0400
-TZNAME:EDT
-DTSTART:19700308T020000
-RRULE:FREQ=YEARLY;BYMONTH=3;BYDAY=2SU
-END:DAYLIGHT
-BEGIN:STANDARD
-TZOFFSETFROM:-0400
-TZOFFSETTO:-0500
-TZNAME:EST
-DTSTART:19701101T020000
-RRULE:FREQ=YEARLY;BYMONTH=11;BYDAY=1SU
-END:STANDARD
-END:VTIMEZONE"""
-    for date, task in dateTaskTuples:
-        events += makeEvent(date, task)
-    events += "\nEND:VCALENDAR"
-    with open(f"{exp}.ics", "w") as f:
-        f.write(events)
-
-
-def makeEvent(date, task):
-    fmtDate = lambda d: d.isoformat().replace(":", "").replace("-", "")
-    return f"""
-BEGIN:VEVENT
-DTSTART;TZID=America/New_York:{fmtDate(date.date())}
-DTEND;TZID=America/New_York:{fmtDate(date.date() + datetime.timedelta(days=1))}
-SUMMARY:{task}
-UID:{uuid.uuid4()}
-CREATED:{fmtDate(datetime.datetime.now().replace(second=0, microsecond=0))}
-DTSTAMP:{fmtDate(datetime.datetime.now().replace(second=0, microsecond=0))}
-END:VEVENT"""
-
-
+cal = Calendar()
 allDateTasks = []
 for exp, weeks in experiments.items():
-    tasks = []
     for week, dailyTasks in weeks.items():
         for date, task in zip(*[dates[week], dailyTasks]):
             if pd.notna(task):
-                tasks.append((date, task))
-                allDateTasks.append((date, f"{exp}: {task}"))
-    # old method: make a calendar for each experiment instead of one combined calendar
-    # makeCalendar(exp, tasks)
+                event = Event()
+                event.add("summary", f"{exp} - {task}")
+                event.add("dtstart", date)
+                event.add("dtend", date)
+                event.add("dtstamp", date)
+                cal.add_component(event)
 
-makeCalendar("Experiments", allDateTasks)
+with open(f"Experiments.ics", "w") as f:
+    f.write(cal.to_ical().decode("utf-8"))
