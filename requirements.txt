@@ -4,3 +4,4 @@ numpy
 readlif
 tifffile
 intermine
+icalendar
