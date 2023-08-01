@@ -1,3 +1,5 @@
+import datetime as dt
+
 import pandas as pd
 from icalendar import Calendar, Event
 
@@ -33,8 +35,7 @@ for exp, weeks in experiments.items():
                 event = Event()
                 event.add("summary", f"{exp} - {task}")
                 event.add("dtstart", date)
-                event.add("dtend", date)
-                event.add("dtstamp", date)
+                event.add("dtend", date + dt.timedelta(days=1))
                 cal.add_component(event)
 
 with open(f"Experiments.ics", "w") as f:
