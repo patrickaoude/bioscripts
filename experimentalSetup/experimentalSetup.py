@@ -2,6 +2,7 @@ import datetime as dt
 
 import pandas as pd
 from icalendar import Calendar, Event
+from icalendar.prop import vDate
 
 df = pd.read_excel("experimentalSetup.xlsx")  # , index_col=0)
 
@@ -34,8 +35,9 @@ for exp, weeks in experiments.items():
             if pd.notna(task):
                 event = Event()
                 event.add("summary", f"{exp} - {task}")
-                event.add("dtstart", date)
-                event.add("dtend", date + dt.timedelta(days=1))
+                event.add("dtstart", vDate(date))
+                event.add("dtend", vDate(date + dt.timedelta(days=1)))
+                event.add("sequence", 1)
                 cal.add_component(event)
 
 with open(f"Experiments.ics", "w") as f:
