@@ -37,7 +37,6 @@ for exp, weeks in experiments.items():
                 event.add("summary", f"{exp} - {task}")
                 event.add("dtstart", vDate(date))
                 event.add("dtend", vDate(date + dt.timedelta(days=1)))
-                event.add("sequence", 1)
                 cal.add_component(event)
 
 with open(f"Experiments.ics", "w") as f:
